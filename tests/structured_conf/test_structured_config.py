@@ -502,6 +502,19 @@ class TestConfigs:
         res = OmegaConf.merge(cfg, {"list": [user]})
         assert res.list == [user]
 
+    def test_merge_dict_with_wrong_type(self, class_type: str) -> None:
+        module: Any = import_module(class_type)
+        cfg = OmegaConf.structured(module.UserDict)
+        with pytest.raises(ValidationError):
+            OmegaConf.merge(cfg, {"dict": {"foo": "var"}})
+
+    def test_merge_dict_with_correct_type(self, class_type: str) -> None:
+        module: Any = import_module(class_type)
+        cfg = OmegaConf.structured(module.UserDict)
+        user = module.User(name="John", age=21)
+        res = OmegaConf.merge(cfg, {"dict": {"foo": user}})
+        assert res.dict == {"foo": user}
+
     def test_typed_dict_key_error(self, class_type: str) -> None:
         module: Any = import_module(class_type)
         input_ = module.ErrorDictIntKey
