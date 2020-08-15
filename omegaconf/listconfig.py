@@ -21,6 +21,7 @@ from ._utils import (
     get_value_kind,
     is_int,
     is_primitive_list,
+    type_str,
 )
 from .base import Container, ContainerMetadata, Node
 from .basecontainer import BaseContainer
@@ -89,15 +90,19 @@ class ListConfig(BaseContainer, MutableSequence[Any]):
         from omegaconf import OmegaConf
         from omegaconf._utils import is_attr_class, is_dataclass
 
-        element_type = self._metadata.element_type
+        target_type = self._metadata.element_type
         value_type = OmegaConf.get_type(value)
-        if is_attr_class(element_type) or is_dataclass(element_type):
+        if is_attr_class(target_type) or is_dataclass(target_type):
             if (
-                element_type is not None
+                target_type is not None
                 and value_type is not None
-                and not issubclass(value_type, element_type)
+                and not issubclass(value_type, target_type)
             ):
-                raise ValidationError(f"{value} is not an instance of {element_type}")
+                msg = (
+                    f"Invalid type assigned : {type_str(value_type)} is not a "
+                    f"subclass of {type_str(target_type)}. value: {value}"
+                )
+                raise ValidationError(msg)
 
     def __deepcopy__(self, memo: Dict[int, Any] = {}) -> "ListConfig":
         res = ListConfig(content=[])
