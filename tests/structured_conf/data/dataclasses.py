@@ -28,6 +28,11 @@ class User:
 
 
 @dataclass
+class UserList:
+    list: List[User] = MISSING
+
+
+@dataclass
 class AnyTypeConfig:
     with_default: Any = "Can get any type at runtime"
     null_default: Any = None
