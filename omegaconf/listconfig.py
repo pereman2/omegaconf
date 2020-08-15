@@ -86,21 +86,17 @@ class ListConfig(BaseContainer, MutableSequence[Any]):
                         "$FULL_KEY is not optional and cannot be assigned None"
                     )
 
-        from omegaconf import DictConfig
+        from omegaconf import OmegaConf
         from omegaconf._utils import is_attr_class, is_dataclass
 
         element_type = self._metadata.element_type
-        if is_dataclass(element_type) or is_attr_class(element_type):
-            error = False
-            if isinstance(value, DictConfig):
-                try:
-                    element_type(**value)
-                except TypeError:
-                    error = True
-            elif not isinstance(value, element_type):
-                error = True
-
-            if error:
+        value_type = OmegaConf.get_type(value)
+        if is_attr_class(element_type) or is_dataclass(element_type):
+            if (
+                element_type is not None
+                and value_type is not None
+                and not issubclass(value_type, element_type)
+            ):
                 raise ValidationError(f"{value} is not an instance of {element_type}")
 
     def __deepcopy__(self, memo: Dict[int, Any] = {}) -> "ListConfig":
