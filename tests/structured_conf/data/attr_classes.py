@@ -27,6 +27,11 @@ class User:
 
 
 @attr.s(auto_attribs=True)
+class UserList:
+    list: List[User] = MISSING
+
+
+@attr.s(auto_attribs=True)
 class AnyTypeConfig:
     with_default: Any = "Can get any type at runtime"
     null_default: Any = None
