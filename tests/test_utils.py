@@ -183,7 +183,6 @@ def test_get_structured_config_data(test_cls_or_obj: Any, expectation: Any) -> N
         assert d["dict1"] == {}
 
 
-@pytest.fixture  # type: ignore
 def test_is_dataclass(mocker: Any) -> None:
     @dataclass
     class Foo:
@@ -197,7 +196,6 @@ def test_is_dataclass(mocker: Any) -> None:
     assert not _utils.is_dataclass(10)
 
 
-@pytest.fixture  # type: ignore
 def test_is_attr_class(mocker: Any) -> None:
     @attr.s
     class Foo:
