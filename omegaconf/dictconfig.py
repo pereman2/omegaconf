@@ -63,7 +63,9 @@ class DictConfig(BaseContainer, MutableMapping[str, Any]):
             metadata=ContainerMetadata(
                 key=key,
                 optional=is_optional,
-                ref_type=self._resolve_generic_ref_type(ref_type),
+                ref_type=self._resolve_generic_ref_type(
+                    ref_type, key_type, element_type
+                ),
                 object_type=None,
                 key_type=key_type,
                 element_type=element_type,
@@ -87,9 +89,14 @@ class DictConfig(BaseContainer, MutableMapping[str, Any]):
                 metadata.key_type = key_type
                 self.__dict__["_metadata"] = metadata
 
-    def _resolve_generic_ref_type(self, ref_type: type) -> type:
+    def _resolve_generic_ref_type(
+        self,
+        ref_type: Union[Type[Any], Any],
+        key_type: Optional[Type[Any]],
+        element_type: Optional[Type[Any]],
+    ) -> Optional[Type[Any]]:
         if ref_type == Dict:
-            return Dict[Union[str, Enum], Any]
+            return Dict[key_type, element_type]  # type: ignore
         else:
             return ref_type
 
