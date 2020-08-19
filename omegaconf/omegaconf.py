@@ -226,10 +226,7 @@ class OmegaConf:
                     ref_type = OmegaConf.get_type(obj)
                     element_type = get_list_element_type(ref_type)
                     return ListConfig(
-                        ref_type=ref_type,
-                        element_type=element_type,
-                        content=obj,
-                        parent=parent,
+                        element_type=element_type, content=obj, parent=parent
                     )
                 else:
                     if isinstance(obj, type):
