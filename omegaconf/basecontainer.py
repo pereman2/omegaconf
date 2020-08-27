@@ -88,7 +88,19 @@ class BaseContainer(Container, ABC):
 
     # Support pickle
     def __getstate__(self) -> Dict[str, Any]:
-        return self.__dict__
+        from omegaconf import DictConfig
+
+        dict_ = copy.copy(self.__dict__)
+        if sys.version_info < (3, 7, 0):
+            ref_type = dict_["_metadata"].ref_type
+            if isinstance(self, DictConfig):
+                if ref_type is not Any:
+                    dict_["_metadata"].ref_type = Dict
+            else:
+                if ref_type is not Any:
+                    dict_["_metadata"].ref_type = List
+
+        return dict_
 
     # Support pickle
     def __setstate__(self, d: Dict[str, Any]) -> None:
