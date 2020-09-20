@@ -144,3 +144,8 @@ class Module:
 @dataclass
 class Package:
     modules: List[Module] = MISSING
+
+
+@dataclass
+class UnionClass:
+    foo: Union[str, int] = 1

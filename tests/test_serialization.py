@@ -6,13 +6,13 @@ import pickle
 import tempfile
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Union
 
 import pytest
 
 from omegaconf import OmegaConf
 
-from . import PersonA, PersonD
+from . import PersonA, PersonD, UnionClass
 
 
 def save_load_from_file(conf: Any, resolve: bool, expected: Any) -> None:
@@ -135,6 +135,18 @@ def test_pickle_list() -> None:
         fp.seek(0)
         c1 = pickle.load(fp)
         assert c == c1
+
+
+def test_pickle_union() -> None:
+    with tempfile.TemporaryFile() as fp:
+        c = OmegaConf.structured(UnionClass)
+        pickle.dump(c, fp)
+        fp.flush()
+        fp.seek(0)
+        c1 = pickle.load(fp)
+        assert c == c1
+        assert c._get_node("foo")._metadata.ref_type == Union[str, int]
+        assert c._get_node("foo").element_types == [str, int]
 
 
 def test_load_duplicate_keys_top() -> None:

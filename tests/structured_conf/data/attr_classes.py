@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import attr
 import pytest
 
-from omegaconf import II, MISSING, SI
+from omegaconf import II, MISSING, SI, ListConfig
 from tests import Color
 
 # attr is a dependency of pytest which means it's always available when testing with pytest.
@@ -467,11 +467,6 @@ class NestedWithNone:
 
 
 @attr.s(auto_attribs=True)
-class UnionError:
-    x: Union[int, str] = 10
-
-
-@attr.s(auto_attribs=True)
 class WithNativeMISSING:
     num: int = attr.NOTHING  # type: ignore
 
@@ -485,3 +480,13 @@ class MissingStructuredConfigField:
 class ListClass:
     list: List[int] = []
     tuple: Tuple[int, int] = (1, 2)
+
+
+@attr.s(auto_attribs=True)
+class Book:
+    author: Union[str, ListConfig] = "dude"
+
+
+@attr.s(auto_attribs=True)
+class Shelf:
+    content: Union[Book, int] = 1

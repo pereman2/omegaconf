@@ -33,7 +33,6 @@ from . import (
     Package,
     Plugin,
     StructuredWithMissing,
-    UnionError,
     User,
 )
 
@@ -493,18 +492,6 @@ params = [
             ref_type_str=None,
         ),
         id="structured:create_from_unsupported_object",
-    ),
-    pytest.param(
-        Expected(
-            create=lambda: None,
-            op=lambda cfg: OmegaConf.structured(UnionError),
-            exception_type=ValueError,
-            msg="Union types are not supported:\nx: Union[int, str]",
-            object_type_str=None,
-            ref_type_str=None,
-            num_lines=4,
-        ),
-        id="structured:create_with_union_error",
     ),
     # assign
     pytest.param(

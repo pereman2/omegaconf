@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import pytest
 
-from omegaconf import II, MISSING, SI
+from omegaconf import II, MISSING, SI, ListConfig
 from tests import Color
 
 # skip test if dataclasses are not available
@@ -479,11 +479,6 @@ class NestedWithNone:
 
 
 @dataclass
-class UnionError:
-    x: Union[int, str] = 10
-
-
-@dataclass
 class WithNativeMISSING:
     num: int = dataclasses.MISSING  # type: ignore
 
@@ -497,3 +492,13 @@ class MissingStructuredConfigField:
 class ListClass:
     list: List[int] = field(default_factory=lambda: [])
     tuple: Tuple[int, int] = field(default_factory=lambda: (1, 2))
+
+
+@dataclass
+class Book:
+    author: Union[str, ListConfig] = "dude"
+
+
+@dataclass
+class Shelf:
+    content: Union[Book, int] = 1
